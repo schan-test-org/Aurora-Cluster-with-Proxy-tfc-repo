@@ -8,10 +8,8 @@ locals {
     "managed" = "terraform"
   })
 
-  db_subnet_group_name  = "${var.project}-${var.env}-db-subnet-group"
   mysql_db_sg_name      = "${var.project}-${var.env}-mysql-sg"
   postgresql_db_sg_name = "${var.project}-${var.env}-postgresql-sg"
-
 
   # region = var.aws_region
   # name   = "rds-proxy-ex-${replace(basename(path.cwd), "_", "-")}"
