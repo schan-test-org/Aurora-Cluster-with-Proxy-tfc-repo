@@ -40,7 +40,7 @@ module "rds_proxy" {
   }
 
   secrets = {
-    (var.db_username) = {
+    (local.db_username) = {
       description = aws_secretsmanager_secret.superuser.description
       arn         = aws_secretsmanager_secret.superuser.arn
       kms_key_id  = aws_secretsmanager_secret.superuser.kms_key_id
