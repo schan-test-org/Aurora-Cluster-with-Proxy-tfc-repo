@@ -16,7 +16,7 @@ module "rds" {
   db_subnet_group_name            = local.db_subnet_group_name
 
   vpc_id                 = var.vpc_id
-  subnets                = var.database_subnets
+  subnets                = var.database_subnet_ids
   create_security_group  = false
   # create_security_group  = false
   vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
