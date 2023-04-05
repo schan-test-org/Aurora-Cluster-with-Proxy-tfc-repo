@@ -15,7 +15,7 @@ sec_name = format("rds-sec-%s", random_string.x.result)
 
 resource "aws_secretsmanager_secret" "superuser" {
   name        = local.sec_name
-  description = "Database superuser, ${local.db_username}, databse connection values"
+  description = "Database superuser, ${local.sec_name}, databse connection values"
   # kms_key_id  = data.aws_kms_alias.secretsmanager.id
 
   tags = local.common_tags

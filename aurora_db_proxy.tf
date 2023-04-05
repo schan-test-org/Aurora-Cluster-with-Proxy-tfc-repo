@@ -26,7 +26,7 @@ module "rds_proxy" {
   # Target Aurora cluster
   target_db_cluster     = true
   # db_cluster_identifier = module.rds.cluster_id
-  db_cluster_identifier = module.aurora_db_cluster.postgres.cluster_id
+  db_cluster_identifier = module.aurora_db_cluster.postgres.id
   vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
 
   db_proxy_endpoints = {
