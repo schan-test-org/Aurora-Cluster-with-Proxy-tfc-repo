@@ -1,7 +1,8 @@
 locals {
 
 role_name = format("%s-%s", var.proxy_role_name, random_string.x.result)
-
+db_username = local.ps_master_username
+db_password = local.ps_master_password
 }
 
 ################################################################################
@@ -26,7 +27,7 @@ module "rds_proxy" {
   # Target Aurora cluster
   target_db_cluster     = true
   # db_cluster_identifier = module.rds.cluster_id
-  db_cluster_identifier = module.aurora_db_cluster.postgres.id
+  db_cluster_identifier = module.aurora_db_cluster.id
   vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
 
   db_proxy_endpoints = {

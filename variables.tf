@@ -44,6 +44,14 @@ variable "create_postgresql_db_security_group" {
   default = false
 }
 
+variable "create_postgresql_db" {
+  default = false
+}
+
+variable "create_mysql_db" {
+  default = false
+}
+
 ############################# rds-proxy-share-sg : var #######################################
 variable "proxy_sgname" { default     = "rds_proxy" }
 variable "proxy_sgdesc" { default     = "PostgreSQL RDS security group" }
@@ -61,8 +69,8 @@ variable "max_idle_connections_percent" { default     = 50 }
 ############################# rds : var #######################################
 # variable "rds_name" { default     = "" }
 # variable "database_name" { default  = "RDS-DB" }
-# variable "master_username" { default     = "root" }
-# variable "master_password" { default  = "uiop1234" }
+variable "master_username" { default     = "root" }
+variable "master_password" { default  = "uiop1234" }
 # variable "db_engine" { default  = "aurora-postgresql" }
 # variable "db_version" { default  = "14.6" }
 

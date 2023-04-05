@@ -5,6 +5,10 @@ locals {
 
   db_subnet_ids = var.database_subnet_ids
   db_subnet_group_name = "${var.project}-dbsubnet-pool"
+
+  ps_master_username = create_postgresql_db ? var.master_username : ""
+  ps_master_password = create_postgresql_db ? var.master_password : ""
+
 }
 
 ################################################################################
@@ -41,8 +45,11 @@ module "aurora_db_cluster" {
     availability_zones   = try(each.value.availability_zones, [])
     database_name        = try(each.value.database_name, "")
 
-    master_username      = try(each.value.master_username, "")
-    master_password      = try(each.value.master_password, "")
+    # master_username      = try(each.value.master_username, "")
+    # master_password      = try(each.value.master_password, "")
+
+    master_username      = local.ps_master_username
+    master_password      = local.ps_master_password
 
     db_subnet_group_name = try(aws_db_subnet_group.this.name, null)
     deletion_protection  = try(each.value.deletion_protection, true)
