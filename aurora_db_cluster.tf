@@ -1,7 +1,7 @@
 locals {
   db_username = var.master_username
   db_password = var.master_password
-  logs_exports = ["postgresql"]
+  # logs_exports = ["postgresql"]
 
   db_subnet_group_name =  "${var.project}-${var.env}-subnet-group"
   db_subnet_ids = var.database_subnet_ids
