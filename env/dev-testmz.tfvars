@@ -62,7 +62,6 @@ engine_family = "POSTGRESQL"
 #################################################################################
 create_db_subnet_group = true
 create_postgresql_db_security_group = true
-create_db_subnet_group = true
 
 aurora_db_cluster = {
 
