@@ -1,29 +1,5 @@
-# RDS Proxy - IAM Authentication & PostgreSQL Cluster
+# PostgreSQL Cluster & RDS Proxy
 
-Configuration in this directory creates:
-
-- AWS RDS Proxy w/ IAM authentication enabled for an RDS Aurora PostgreSQL cluster
-
-## Usage
-
-To run this example you need to execute:
-
-```bash
-$ terraform init
-$ terraform plan
-$ terraform apply
-```
-
-Note that this example may create resources which will incur monetary charges on your AWS bill. Run `terraform destroy` when you no longer need these resources.
-
-## Validation
-
-An EC2 instance configuration has been provided for use in validating the example configuration. After provisioning the configuration, there are some outputs that have been provided to aid in validating changes. To perform validation, after the EC2 instance finishes provisioning:
-
-1. Connect to the EC2 instance using Session Manager
-2. Copy the output from `superuser_proxy_iam_token` and paste it into the Session Manager window - this generates the token for connecting to the proxy with IAM auth.
-3. Copy the output from `superuser_proxy_iam_connect` and paste it into the window - NOTE: remove the string escape slashes `psql \"host...` -> `psql "host...`
-4. You should now be connected to the `example` database in the RDS instance via the AWS Proxy using IAM authentication
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -32,14 +8,7 @@ An EC2 instance configuration has been provided for use in validating the exampl
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.38 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.0 |
 
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.38 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 2.0 |
 
 ## Modules
 
@@ -48,7 +17,7 @@ An EC2 instance configuration has been provided for use in validating the exampl
 | <a name="module_rds"></a> [rds](#module\_rds) | terraform-aws-modules/rds-aurora/aws | ~> 6.0 |
 | <a name="module_rds_proxy"></a> [rds\_proxy](#module\_rds\_proxy) | ../../ | n/a |
 | <a name="module_rds_proxy_sg"></a> [rds\_proxy\_sg](#module\_rds\_proxy\_sg) | terraform-aws-modules/security-group/aws | ~> 4.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 3.0 |
+
 
 ## Resources
 
