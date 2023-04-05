@@ -1,7 +1,7 @@
 
 locals {
 
-sec_name = format("%s-%s", local.db_username, random_string.x.result)
+sec_name = format("rds-sec-%s", random_string.x.result)
 
 }
 
