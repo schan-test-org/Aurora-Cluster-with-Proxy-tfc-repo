@@ -1,7 +1,7 @@
 locals {
 
-  db_parameter_gr_name  = "${var.project}-${var.env}-db_parameter_group"
-  db_parameter_ct_name  = "${var.project}-${var.env}-cluster_parameter_group"
+  db_parameter_gr_name  = "${var.project}-${var.env}-db-parameter-group"
+  db_parameter_ct_name  = "${var.project}-${var.env}-cluster-parameter-group"
 }
 
 
