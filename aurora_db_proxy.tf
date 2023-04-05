@@ -1,3 +1,9 @@
+locals {
+
+role_name = format("%s-%s", var.proxy_role_name, random_string.x.result)
+
+}
+
 ################################################################################
 # RDS-PROXY
 ################################################################################
@@ -10,7 +16,7 @@ module "rds_proxy" {
   name                   = var.proxy_name
   vpc_subnet_ids         = var.private_subnet_ids
 
-  iam_role_name          = var.proxy_role_name
+  iam_role_name          = local.role_name
   idle_client_timeout = var.idle_client_timeout
 
   engine_family = var.engine_family

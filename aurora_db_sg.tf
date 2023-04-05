@@ -1,3 +1,8 @@
+locals {
+  vpc_id = var.vpc_id
+
+}
+
 ################################################################################
 # RDS-SG
 ################################################################################
@@ -7,7 +12,7 @@ module "rds_proxy_sg" {
   name        = var.proxy_sgname
   description = var.proxy_sgdesc
 
-  vpc_id      = var.vpc_id
+  vpc_id      = local.vpc_id
 
   revoke_rules_on_delete = true
 
