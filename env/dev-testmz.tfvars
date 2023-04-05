@@ -24,17 +24,15 @@ backend_remote_network_workspace = "dev-subnet-tfc"
 # create_mysql_db_security_group      = false
 # create_postgresql_db_security_group = true
 create_db_subnet_group = true
-vpc_id = ""
-private_subnets = [""]
-database_subnets = [""]
+vpc_id = "vpc-0e8acf616f7d0dd34"
+private_subnets = ["10.30.16.0/20", "10.30.32.0/20"]
+database_subnets = ["10.30.48.0/24", "10.30.49.0/24", "10.30.50.0/24", "10.30.51.0/24"]
+#   public_subnets   = ["10.30.0.0/21", "10.30.8.0/21"]
 
 #for SG rule
-vpc_cidr_block = ""
-database_cidr_block = ""
+vpc_cidr_block = "10.30.0.0/16"
+database_cidr_block = "10.30.48.0/24,10.30.49.0/24,10.30.50.0/24,10.30.51.0/24"
 
-#   public_subnets   = ["10.0.0.0/24", "10.0.1.0/24", "10.0.2.0/24"]
-#   private_subnets  = ["10.0.3.0/24", "10.0.4.0/24", "10.0.5.0/24"]
-#   database_subnets = ["10.0.7.0/24", "10.0.8.0/24", "10.0.9.0/24"]
 
 ###############################################################################
 # Aurora DB Cluster about
