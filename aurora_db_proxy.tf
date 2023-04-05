@@ -8,7 +8,7 @@ module "rds_proxy" {
   debug_logging = true
 
   name                   = var.proxy_name
-  vpc_subnet_ids         = var.private_subnets
+  vpc_subnet_ids         = var.private_subnet_ids
 
   iam_role_name          = var.proxy_role_name
   idle_client_timeout = var.idle_client_timeout
@@ -26,13 +26,13 @@ module "rds_proxy" {
   db_proxy_endpoints = {
     read_write = {
       name                   = "read-write-endpoint"
-      vpc_subnet_ids         = var.private_subnets
+      vpc_subnet_ids         = var.private_subnet_ids
       vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
       tags                   = local.common_tags
     },
     read_only = {
       name                   = "read-only-endpoint"
-      vpc_subnet_ids         = var.private_subnets
+      vpc_subnet_ids         = var.private_subnet_ids
       vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
       target_role            = "READ_ONLY"
       tags                   = local.common_tags

@@ -25,7 +25,9 @@ backend_remote_network_workspace = "dev-subnet-tfc"
 # create_postgresql_db_security_group = true
 create_db_subnet_group = true
 vpc_id = "vpc-0e8acf616f7d0dd34"
-private_subnets = ["10.30.16.0/20", "10.30.32.0/20"]
+# private_subnets = ["10.30.16.0/20", "10.30.32.0/20"]
+private_subnet_ids = ["subnet-0dea2a38484eed006","subnet-0515d47ea98e7952e"]
+
 database_subnets = ["10.30.48.0/24", "10.30.49.0/24", "10.30.50.0/24", "10.30.51.0/24"]
 #   public_subnets   = ["10.30.0.0/21", "10.30.8.0/21"]
 
