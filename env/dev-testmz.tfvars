@@ -26,9 +26,11 @@ backend_remote_network_workspace = "dev-subnet-tfc"
 create_db_subnet_group = true
 vpc_id = "vpc-0e8acf616f7d0dd34"
 # private_subnets = ["10.30.16.0/20", "10.30.32.0/20"]
-private_subnet_ids = ["subnet-0dea2a38484eed006","subnet-0515d47ea98e7952e"]
+# database_subnets = ["10.30.48.0/24", "10.30.49.0/24", "10.30.50.0/24", "10.30.51.0/24"]
 
-database_subnets = ["10.30.48.0/24", "10.30.49.0/24", "10.30.50.0/24", "10.30.51.0/24"]
+private_subnet_ids = ["subnet-0dea2a38484eed006","subnet-0515d47ea98e7952e"]
+database_subnets_ids = ["subnet-0bf5c8264d64f7604", "subnet-08a9da6638e959a9d", "subnet-0c53faa6985411e79", "subnet-0dff8a5cd7463d696"]
+
 #   public_subnets   = ["10.30.0.0/21", "10.30.8.0/21"]
 
 #for SG rule

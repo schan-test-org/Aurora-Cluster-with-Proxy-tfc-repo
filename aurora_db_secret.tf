@@ -1,4 +1,10 @@
 
+locals {
+
+sec_name = format("%s-%s", local.db_username, random_string.x.result)
+
+}
+
 ################################################################################
 # Secrets - DB user passwords
 ################################################################################
@@ -8,7 +14,7 @@
 # }
 
 resource "aws_secretsmanager_secret" "superuser" {
-  name        = local.db_username
+  name        = local.sec_name
   description = "Database superuser, ${local.db_username}, databse connection values"
   # kms_key_id  = data.aws_kms_alias.secretsmanager.id
 

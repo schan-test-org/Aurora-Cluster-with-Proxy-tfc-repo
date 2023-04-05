@@ -22,7 +22,7 @@ variable "backend_remote_eks_workspace" {
 ############################# vpc& network : var #########################################
 variable "vpc_id" { default     = "" }
 variable "private_subnet_ids" { default     = [] }
-variable "database_subnets" { default     = [] }
+variable "database_subnet_ids" { default     = [] }
 
 variable "vpc_cidr_block" { default     = "" }
 variable "database_cidr_block" { default     = "" }

@@ -18,7 +18,18 @@ locals {
   # db_username = random_pet.users.id # using random here due to secrets taking at least 7 days before fully deleting from account
   # db_password = random_password.password.result
 
+
+
 }
+
+resource "random_string" "x" {
+  length  = 5
+  special = false
+  upper   = false
+}
+
+# random_string.x.result
+
 
 # module "vpc" {
 #   source  = "terraform-aws-modules/vpc/aws"
