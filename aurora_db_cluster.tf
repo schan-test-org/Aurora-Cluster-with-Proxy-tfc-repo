@@ -1,6 +1,8 @@
 locals {
 db_username = var.master_username
 db_password = var.master_password
+
+logs_exports = ["postgresql"]
 }
 
 ################################################################################
@@ -35,6 +37,10 @@ module "rds" {
   storage_encrypted   = true
   apply_immediately   = true
   skip_final_snapshot = true
+
+  enabled_cloudwatch_logs_exports = local.logs_exports
+  monitoring_interval             = 60
+  create_monitoring_role          = true
 
   db_parameter_group_name         = aws_db_parameter_group.aurora_db_postgres11_parameter_group.id
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_postgres11_parameter_group.id
