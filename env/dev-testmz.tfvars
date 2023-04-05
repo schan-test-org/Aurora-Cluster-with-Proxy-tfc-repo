@@ -2,7 +2,7 @@
 # Common Variables
 ###############################################################################
 project = "dev-testmz"
-region  = "ap-northeast-2"
+aws_region  = "ap-northeast-2"
 
 default_tags = {
   dept  = "Platform Service Architect Group / DevOps SWAT Team"
