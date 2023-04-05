@@ -63,14 +63,17 @@ engine_family = "POSTGRESQL"
 create_db_subnet_group = true
 create_postgresql_db_security_group = true
 
+########
 create_postgresql_db = true
 master_username     = "postgre-root"
 master_password     = "uiop1234"
+cluster_name        = "postgresql"
+########
 
 aurora_db_cluster = {
 
   postgres = {
-    cluster_name        = "postgresql"
+    # cluster_name        = "postgresql"
     engine              = "aurora-postgresql"
     engine_version      = "14.6"
     availability_zones  = ["ap-northeast-2a", "ap-northeast-2b", "ap-northeast-2c", "ap-northeast-2d"]

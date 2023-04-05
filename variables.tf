@@ -71,6 +71,7 @@ variable "max_idle_connections_percent" { default     = 50 }
 # variable "database_name" { default  = "RDS-DB" }
 variable "master_username" { default     = "root" }
 variable "master_password" { default  = "uiop1234" }
+variable "cluster_name" { default  = "" }
 # variable "db_engine" { default  = "aurora-postgresql" }
 # variable "db_version" { default  = "14.6" }
 

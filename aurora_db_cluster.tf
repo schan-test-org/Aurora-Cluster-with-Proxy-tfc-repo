@@ -6,8 +6,9 @@ locals {
   db_subnet_ids = var.database_subnet_ids
   db_subnet_group_name = "${var.project}-dbsubnet-pool"
 
-  ps_master_username = create_postgresql_db ? var.master_username : ""
-  ps_master_password = create_postgresql_db ? var.master_password : ""
+  ps_master_username = var.create_postgresql_db == true ? var.master_username : ""
+  ps_master_password = var.create_postgresql_db == true? var.master_password : ""
+  ps_name = var.create_postgresql_db == true? var.cluster_name : ""
 
 }
 
@@ -39,7 +40,8 @@ module "aurora_db_cluster" {
   default_tags = var.default_tags
 
   aurora_db_cluster_info = {
-    cluster_name         = each.value.cluster_name == "" ? each.key : each.value.cluster_name
+    # cluster_name         = each.value.cluster_name == "" ? each.key : each.value.cluster_name
+    cluster_name         = local.ps_name
     engine               = try(each.value.engine, "")
     engine_version       = try(each.value.engine_version, "")
     availability_zones   = try(each.value.availability_zones, [])
