@@ -21,8 +21,12 @@ variable "backend_remote_eks_workspace" {
 
 ############################# vpc& network : var #########################################
 variable "vpc_id" { default     = "" }
+
 variable "private_subnet_ids" { default     = [] }
 variable "database_subnet_ids" { default     = [] }
+
+variable "private_subnets" { default     = [] }
+variable "database_subnets" { default     = [] }
 
 variable "vpc_cidr_block" { default     = "" }
 variable "database_cidr_block" { default     = "" }
@@ -90,28 +94,28 @@ variable "aurora_db_cluster" {
     master_username     = optional(string, "")
     master_password     = optional(string, "")
     deletion_protection = optional(bool, true)
-
-    instances = optional(list(object({
-      identifier     = string
-      instance_class = string
-      })), [{
-      identifier     = "instance-1"
-      instance_class = "db.t3.medium"
-    }])
+    instance_class       = optional(string, "")
+    # instances = optional(list(object({
+    #   identifier     = string
+    #   instance_class = string
+    #   })), [{
+    #   identifier     = "instance-1"
+    #   instance_class = "db.t3.medium"
+    # }])
 
     create_cluster_parameter_group = optional(bool, false)
-    cluster_parameter_group_family = optional(string, "")
-    cluster_parameter_group_parameters = optional(list(object({
-      name  = string
-      value = string
-    })), [])
+    # cluster_parameter_group_family = optional(string, "")
+    # cluster_parameter_group_parameters = optional(list(object({
+    #   name  = string
+    #   value = string
+    # })), [])
 
     create_db_parameter_group = optional(bool, false)
-    db_parameter_group_family = optional(string, "")
-    db_parameter_group_parameters = optional(list(object({
-      name  = string
-      value = string
-    })), [])
+    # db_parameter_group_family = optional(string, "")
+    # db_parameter_group_parameters = optional(list(object({
+    #   name  = string
+    #   value = string
+    # })), [])
 
     create_read_replica_autoscaling    = optional(bool, false)
     autoscaling_min_capacity           = optional(number, 1)

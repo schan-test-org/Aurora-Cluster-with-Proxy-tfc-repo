@@ -17,7 +17,7 @@ variable "tags" {
 variable "create_random_password" {
   description = "Determines whether to create random password for RDS primary cluster"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "random_password_length" {
@@ -33,7 +33,7 @@ variable "random_password_length" {
 variable "create_db_subnet_group" {
   description = "Determines whether to create the database subnet group or use existing"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "db_subnet_group_name" {
@@ -371,7 +371,7 @@ variable "monitoring_interval" {
 variable "performance_insights_enabled" {
   description = "Specifies whether Performance Insights is enabled or not"
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "performance_insights_kms_key_id" {
@@ -547,7 +547,7 @@ variable "autoscaling_target_connections" {
 variable "create_security_group" {
   description = "Determines whether to create security group for RDS cluster"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "security_group_use_name_prefix" {

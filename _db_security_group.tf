@@ -1,19 +1,13 @@
-locals {
-  vpc_id = var.vpc_id
-
-}
-
 ################################################################################
 # RDS-SG
 ################################################################################
-module "rds_proxy_sg" {
+module "rds_proxy_share_sg" {
   source  = "./modules-sg"
 
-  name        = var.proxy_sgname
+  name        = "${var.proxy_sgname}-${random_string.x.result}"
   description = var.proxy_sgdesc
 
-  vpc_id      = local.vpc_id
-
+  vpc_id      = var.vpc_id
   revoke_rules_on_delete = true
 
   ingress_with_cidr_blocks = [
@@ -35,5 +29,8 @@ module "rds_proxy_sg" {
   ]
 
   # tags = local.common_tags
-  tags = local.common_tags
+  tags = merge(
+    var.default_tags,
+    tomap({ "Name" = var.proxy_sgname })
+  )
 }

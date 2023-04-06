@@ -1,8 +1,5 @@
 locals {
-
-role_name = format("%s-%s", var.proxy_role_name, random_string.x.result)
-db_username = local.ps_master_username
-db_password = local.ps_master_password
+  role_name = format("%s-%s", var.proxy_role_name, random_string.x.result)
 }
 
 ################################################################################
@@ -14,7 +11,7 @@ module "rds_proxy" {
   create_proxy = true
   debug_logging = true
 
-  name                   = var.proxy_name
+  name                   = "${var.proxy_name}-${random_string.x.result}"
   vpc_subnet_ids         = var.private_subnet_ids
 
   iam_role_name          = local.role_name
@@ -26,23 +23,21 @@ module "rds_proxy" {
 
   # Target Aurora cluster
   target_db_cluster     = true
-  # db_cluster_identifier = module.rds.cluster_id
-  # db_cluster_identifier = module.aurora_db_cluster.id
-  db_cluster_identifier = local.ps_name
+  db_cluster_identifier = module.rds_psg.cluster_id
 
-  vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
+  vpc_security_group_ids = [module.rds_proxy_share_sg.security_group_id]
 
   db_proxy_endpoints = {
     read_write = {
-      name                   = "read-write-endpoint"
+      name                   = "read-write-endpoint-${random_string.x.result}"
       vpc_subnet_ids         = var.private_subnet_ids
-      vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
+      vpc_security_group_ids = [module.rds_proxy_share_sg.security_group_id]
       tags                   = local.common_tags
     },
     read_only = {
-      name                   = "read-only-endpoint"
+      name                   = "read-only-endpoint-${random_string.x.result}"
       vpc_subnet_ids         = var.private_subnet_ids
-      vpc_security_group_ids = [module.rds_proxy_sg.security_group_id]
+      vpc_security_group_ids = [module.rds_proxy_share_sg.security_group_id]
       target_role            = "READ_ONLY"
       tags                   = local.common_tags
     }
@@ -56,5 +51,9 @@ module "rds_proxy" {
     }
   }
 
-  tags = local.common_tags
+  tags = merge(
+    var.default_tags,
+    tomap({ "Name" = "${var.proxy_name}-${random_string.x.result}" })
+  )
+
 }

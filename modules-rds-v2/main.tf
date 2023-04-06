@@ -3,14 +3,11 @@ data "aws_partition" "current" {}
 locals {
   # create_cluster = var.create_cluster && var.putin_khuylo
   create_cluster = var.create_cluster
-
+  db_subnet_group_name          = var.db_subnet_group_name
   port = coalesce(var.port, (var.engine == "aurora-postgresql" ? 5432 : 3306))
 
-  internal_db_subnet_group_name = try(coalesce(var.db_subnet_group_name, var.name), "")
-  db_subnet_group_name          = var.create_db_subnet_group ? try(aws_db_subnet_group.this[0].name, null) : local.internal_db_subnet_group_name
-
-  cluster_parameter_group_name = try(coalesce(var.db_cluster_parameter_group_name, var.name), null)
-  db_parameter_group_name      = try(coalesce(var.db_parameter_group_name, var.name), null)
+  # internal_db_subnet_group_name = try(coalesce(var.db_subnet_group_name, var.name), "")
+  # db_subnet_group_name          = var.create_db_subnet_group ? try(aws_db_subnet_group.this[0].name, null) : local.internal_db_subnet_group_name
 
   master_password  = local.create_cluster && var.create_random_password ? random_password.master_password[0].result : var.master_password
   backtrack_window = (var.engine == "aurora-mysql" || var.engine == "aurora") && var.engine_mode != "serverless" ? var.backtrack_window : 0
@@ -18,6 +15,9 @@ locals {
   is_serverless = var.engine_mode == "serverless"
 
   final_snapshot_identifier_prefix = "${var.final_snapshot_identifier_prefix}-${var.name}-${try(random_id.snapshot_identifier[0].hex, "")}"
+
+  cluster_parameter_group_name = try(coalesce(var.db_cluster_parameter_group_name, var.name), null)
+  db_parameter_group_name      = try(coalesce(var.db_parameter_group_name, var.name), null)
 }
 
 ################################################################################
@@ -45,15 +45,15 @@ resource "random_id" "snapshot_identifier" {
 # DB Subnet Group
 ################################################################################
 
-resource "aws_db_subnet_group" "this" {
-  count = local.create_cluster && var.create_db_subnet_group ? 1 : 0
+# resource "aws_db_subnet_group" "this" {
+#   count = local.create_cluster && var.create_db_subnet_group ? 1 : 0
 
-  name        = local.internal_db_subnet_group_name
-  description = "For Aurora cluster ${var.name}"
-  subnet_ids  = var.subnets
+#   name        = local.internal_db_subnet_group_name
+#   description = "For Aurora cluster ${var.name}"
+#   subnet_ids  = var.subnets
 
-  tags = var.tags
-}
+#   tags = var.tags
+# }
 
 ################################################################################
 # Cluster
@@ -74,7 +74,7 @@ resource "aws_rds_cluster" "this" {
   copy_tags_to_snapshot               = var.copy_tags_to_snapshot
   database_name                       = var.is_primary_cluster ? var.database_name : null
   db_cluster_instance_class           = var.db_cluster_instance_class
-  db_cluster_parameter_group_name     = var.create_db_cluster_parameter_group ? aws_rds_cluster_parameter_group.this[0].id : var.db_cluster_parameter_group_name
+  db_cluster_parameter_group_name     = var.db_cluster_parameter_group_name
   db_instance_parameter_group_name    = var.allow_major_version_upgrade ? var.db_cluster_db_instance_parameter_group_name : null
   db_subnet_group_name                = local.db_subnet_group_name
   deletion_protection                 = var.deletion_protection
@@ -148,7 +148,8 @@ resource "aws_rds_cluster" "this" {
   storage_encrypted      = var.storage_encrypted
   storage_type           = var.storage_type
   tags                   = merge(var.tags, var.cluster_tags)
-  vpc_security_group_ids = compact(concat([try(aws_security_group.this[0].id, "")], var.vpc_security_group_ids))
+  vpc_security_group_ids = var.vpc_security_group_ids
+  # vpc_security_group_ids = compact(concat([try(aws_security_group.this[0].id, "")], var.vpc_security_group_ids))
 
   timeouts {
     create = try(var.cluster_timeouts.create, null)
@@ -182,7 +183,7 @@ resource "aws_rds_cluster_instance" "this" {
   ca_cert_identifier                    = var.ca_cert_identifier
   cluster_identifier                    = aws_rds_cluster.this[0].id
   copy_tags_to_snapshot                 = try(each.value.copy_tags_to_snapshot, var.copy_tags_to_snapshot)
-  db_parameter_group_name               = var.create_db_parameter_group ? aws_db_parameter_group.this[0].id : var.db_parameter_group_name
+  db_parameter_group_name               = var.db_parameter_group_name
   db_subnet_group_name                  = local.db_subnet_group_name
   engine                                = var.engine
   engine_version                        = var.engine_version
@@ -319,124 +320,124 @@ resource "aws_appautoscaling_policy" "this" {
 # Security Group
 ################################################################################
 
-resource "aws_security_group" "this" {
-  count = local.create_cluster && var.create_security_group ? 1 : 0
+# resource "aws_security_group" "this" {
+#   count = local.create_cluster && var.create_security_group ? 1 : 0
 
-  name        = var.security_group_use_name_prefix ? null : var.name
-  name_prefix = var.security_group_use_name_prefix ? "${var.name}-" : null
-  vpc_id      = var.vpc_id
-  description = coalesce(var.security_group_description, "Control traffic to/from RDS Aurora ${var.name}")
+#   name        = var.security_group_use_name_prefix ? null : var.name
+#   name_prefix = var.security_group_use_name_prefix ? "${var.name}-" : null
+#   vpc_id      = var.vpc_id
+#   description = coalesce(var.security_group_description, "Control traffic to/from RDS Aurora ${var.name}")
 
-  tags = merge(var.tags, var.security_group_tags, { Name = var.name })
+#   tags = merge(var.tags, var.security_group_tags, { Name = var.name })
 
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-# TODO - change to map of ingress rules under one resource at next breaking change
-resource "aws_security_group_rule" "default_ingress" {
-  count = local.create_cluster && var.create_security_group ? length(var.allowed_security_groups) : 0
-
-  description = "From allowed SGs"
-
-  type                     = "ingress"
-  from_port                = local.port
-  to_port                  = local.port
-  protocol                 = "tcp"
-  source_security_group_id = element(var.allowed_security_groups, count.index)
-  security_group_id        = aws_security_group.this[0].id
-}
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
 
 # TODO - change to map of ingress rules under one resource at next breaking change
-resource "aws_security_group_rule" "cidr_ingress" {
-  count = local.create_cluster && var.create_security_group && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+# resource "aws_security_group_rule" "default_ingress" {
+#   count = local.create_cluster && var.create_security_group ? length(var.allowed_security_groups) : 0
 
-  description = "From allowed CIDRs"
+#   description = "From allowed SGs"
 
-  type              = "ingress"
-  from_port         = local.port
-  to_port           = local.port
-  protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = aws_security_group.this[0].id
-}
+#   type                     = "ingress"
+#   from_port                = local.port
+#   to_port                  = local.port
+#   protocol                 = "tcp"
+#   source_security_group_id = element(var.allowed_security_groups, count.index)
+#   security_group_id        = aws_security_group.this[0].id
+# }
 
-resource "aws_security_group_rule" "egress" {
-  for_each = local.create_cluster && var.create_security_group ? var.security_group_egress_rules : {}
+# TODO - change to map of ingress rules under one resource at next breaking change
+# resource "aws_security_group_rule" "cidr_ingress" {
+#   count = local.create_cluster && var.create_security_group && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
 
-  # required
-  type              = "egress"
-  from_port         = try(each.value.from_port, local.port)
-  to_port           = try(each.value.to_port, local.port)
-  protocol          = "tcp"
-  security_group_id = aws_security_group.this[0].id
+#   description = "From allowed CIDRs"
 
-  # optional
-  cidr_blocks              = try(each.value.cidr_blocks, null)
-  description              = try(each.value.description, null)
-  ipv6_cidr_blocks         = try(each.value.ipv6_cidr_blocks, null)
-  prefix_list_ids          = try(each.value.prefix_list_ids, null)
-  source_security_group_id = try(each.value.source_security_group_id, null)
-}
+#   type              = "ingress"
+#   from_port         = local.port
+#   to_port           = local.port
+#   protocol          = "tcp"
+#   cidr_blocks       = var.allowed_cidr_blocks
+#   security_group_id = aws_security_group.this[0].id
+# }
+
+# resource "aws_security_group_rule" "egress" {
+#   for_each = local.create_cluster && var.create_security_group ? var.security_group_egress_rules : {}
+
+#   # required
+#   type              = "egress"
+#   from_port         = try(each.value.from_port, local.port)
+#   to_port           = try(each.value.to_port, local.port)
+#   protocol          = "tcp"
+#   security_group_id = aws_security_group.this[0].id
+
+#   # optional
+#   cidr_blocks              = try(each.value.cidr_blocks, null)
+#   description              = try(each.value.description, null)
+#   ipv6_cidr_blocks         = try(each.value.ipv6_cidr_blocks, null)
+#   prefix_list_ids          = try(each.value.prefix_list_ids, null)
+#   source_security_group_id = try(each.value.source_security_group_id, null)
+# }
 
 ################################################################################
 # Cluster Parameter Group
 ################################################################################
 
-resource "aws_rds_cluster_parameter_group" "this" {
-  count = local.create_cluster && var.create_db_cluster_parameter_group ? 1 : 0
+# resource "aws_rds_cluster_parameter_group" "this" {
+#   count = local.create_cluster && var.create_db_cluster_parameter_group ? 1 : 0
 
-  name        = var.db_cluster_parameter_group_use_name_prefix ? null : local.cluster_parameter_group_name
-  name_prefix = var.db_cluster_parameter_group_use_name_prefix ? "${local.cluster_parameter_group_name}-" : null
-  description = var.db_cluster_parameter_group_description
-  family      = var.db_cluster_parameter_group_family
+#   name        = var.db_cluster_parameter_group_use_name_prefix ? null : local.cluster_parameter_group_name
+#   name_prefix = var.db_cluster_parameter_group_use_name_prefix ? "${local.cluster_parameter_group_name}-" : null
+#   description = var.db_cluster_parameter_group_description
+#   family      = var.db_cluster_parameter_group_family
 
-  dynamic "parameter" {
-    for_each = var.db_cluster_parameter_group_parameters
+#   dynamic "parameter" {
+#     for_each = var.db_cluster_parameter_group_parameters
 
-    content {
-      name         = parameter.value.name
-      value        = parameter.value.value
-      apply_method = try(parameter.value.apply_method, "immediate")
-    }
-  }
+#     content {
+#       name         = parameter.value.name
+#       value        = parameter.value.value
+#       apply_method = try(parameter.value.apply_method, "immediate")
+#     }
+#   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
+#   lifecycle {
+#     create_before_destroy = true
+#   }
 
-  tags = var.tags
-}
+#   tags = var.tags
+# }
 
 ################################################################################
 # DB Parameter Group
 ################################################################################
 
-resource "aws_db_parameter_group" "this" {
-  count = local.create_cluster && var.create_db_parameter_group ? 1 : 0
+# resource "aws_db_parameter_group" "this" {
+#   count = local.create_cluster && var.create_db_parameter_group ? 1 : 0
 
-  name        = var.db_parameter_group_use_name_prefix ? null : local.db_parameter_group_name
-  name_prefix = var.db_parameter_group_use_name_prefix ? "${local.db_parameter_group_name}-" : null
-  description = var.db_parameter_group_description
-  family      = var.db_parameter_group_family
+#   name        = var.db_parameter_group_use_name_prefix ? null : local.db_parameter_group_name
+#   name_prefix = var.db_parameter_group_use_name_prefix ? "${local.db_parameter_group_name}-" : null
+#   description = var.db_parameter_group_description
+#   family      = var.db_parameter_group_family
 
-  dynamic "parameter" {
-    for_each = var.db_parameter_group_parameters
+#   dynamic "parameter" {
+#     for_each = var.db_parameter_group_parameters
 
-    content {
-      name         = parameter.value.name
-      value        = parameter.value.value
-      apply_method = try(parameter.value.apply_method, "immediate")
-    }
-  }
+#     content {
+#       name         = parameter.value.name
+#       value        = parameter.value.value
+#       apply_method = try(parameter.value.apply_method, "immediate")
+#     }
+#   }
 
-  lifecycle {
-    create_before_destroy = true
-  }
+#   lifecycle {
+#     create_before_destroy = true
+#   }
 
-  tags = var.tags
-}
+#   tags = var.tags
+# }
 
 ################################################################################
 # CloudWatch Log Group

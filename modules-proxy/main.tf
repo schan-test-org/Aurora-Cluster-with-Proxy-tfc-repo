@@ -86,12 +86,23 @@ resource "aws_db_proxy_endpoint" "this" {
 resource "aws_cloudwatch_log_group" "this" {
   count = var.create_proxy && var.manage_log_group ? 1 : 0
 
-  name              = "/aws/rds/proxy/${var.name}"
+  name              = "/aws/rds/proxy/${var.name}-${random_string.x.result}"
   retention_in_days = var.log_group_retention_in_days
   kms_key_id        = var.log_group_kms_key_id
+  # retention_in_days = 7
 
   tags = merge(var.tags, var.log_group_tags)
 }
+
+#############################
+resource "random_string" "x" {
+  length  = 5
+  special = false
+  upper   = false
+}
+
+# random_string.x.result
+#############################
 
 ################################################################################
 # IAM Role
@@ -135,7 +146,8 @@ data "aws_iam_policy_document" "this" {
     sid       = "DecryptSecrets"
     effect    = "Allow"
     actions   = ["kms:Decrypt"]
-    resources = distinct([for secret in var.secrets : secret.kms_key_id])
+    # resources = distinct([for secret in var.secrets : secret.kms_key_id])
+    resources = ["*"]
     condition {
       test     = "StringEquals"
       variable = "kms:ViaService"
@@ -166,7 +178,8 @@ data "aws_iam_policy_document" "this" {
       "secretsmanager:ListSecretVersionIds",
     ]
 
-    resources = distinct([for secret in var.secrets : secret.arn])
+    resources = ["*"]
+    # resources = distinct([for secret in var.secrets : secret.arn])
   }
 }
 

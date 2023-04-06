@@ -124,38 +124,41 @@ output "enhanced_monitoring_iam_role_unique_id" {
 # Security Group
 ################################################################################
 
-output "security_group_id" {
-  description = "The security group ID of the cluster"
-  value       = try(aws_security_group.this[0].id, "")
-}
+# output "security_group_id" {
+#   description = "The security group ID of the cluster"
+#   # value       = try(aws_security_group.this[0].id, "")
+#   value       = ""
+# }
 
 ################################################################################
 # Cluster Parameter Group
 ################################################################################
 
-output "db_cluster_parameter_group_arn" {
-  description = "The ARN of the DB cluster parameter group created"
-  value       = try(aws_rds_cluster_parameter_group.this[0].arn, "")
-}
+# output "db_cluster_parameter_group_arn" {
+#   description = "The ARN of the DB cluster parameter group created"
+#   value       = try(aws_rds_cluster_parameter_group.this[0].arn, "")
+# }
 
-output "db_cluster_parameter_group_id" {
-  description = "The ID of the DB cluster parameter group created"
-  value       = try(aws_rds_cluster_parameter_group.this[0].id, "")
-}
+# output "db_cluster_parameter_group_id" {
+#   description = "The ID of the DB cluster parameter group created"
+#   value       = try(aws_rds_cluster_parameter_group.this[0].id, "")
+# }
 
 ################################################################################
 # DB Parameter Group
 ################################################################################
 
-output "db_parameter_group_arn" {
-  description = "The ARN of the DB parameter group created"
-  value       = try(aws_db_parameter_group.this[0].arn, "")
-}
+# output "db_parameter_group_arn" {
+#   description = "The ARN of the DB parameter group created"
+#   value       = ""
+#   # value       = try(aws_db_parameter_group.this[0].arn, "")
+# }
 
-output "db_parameter_group_id" {
-  description = "The ID of the DB parameter group created"
-  value       = try(aws_db_parameter_group.this[0].id, "")
-}
+# output "db_parameter_group_id" {
+#   description = "The ID of the DB parameter group created"
+#   value       = ""
+#   # value       = try(aws_db_parameter_group.this[0].id, "")
+# }
 
 ################################################################################
 # CloudWatch Log Group

@@ -156,7 +156,7 @@ variable "manage_log_group" {
 variable "log_group_retention_in_days" {
   description = "Specifies the number of days you want to retain log events in the log group"
   type        = number
-  default     = 30
+  default     = 7
 }
 
 variable "log_group_kms_key_id" {

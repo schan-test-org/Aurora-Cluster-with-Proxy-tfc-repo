@@ -1,8 +1,6 @@
 
 locals {
-
-sec_name = format("rds-sec-%s", random_string.x.result)
-
+  sec_name = format("rds-sec-%s", random_string.x.result)
 }
 
 ################################################################################
@@ -18,7 +16,10 @@ resource "aws_secretsmanager_secret" "superuser" {
   description = "Database superuser, ${local.sec_name}, databse connection values"
   # kms_key_id  = data.aws_kms_alias.secretsmanager.id
 
-  tags = local.common_tags
+  tags = merge(
+    var.default_tags,
+    tomap({ "Name" = local.sec_name })
+  )
 }
 
 resource "aws_secretsmanager_secret_version" "superuser" {
