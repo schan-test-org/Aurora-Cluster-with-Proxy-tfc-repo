@@ -11,7 +11,8 @@ locals {
   })
 
   db_subnet_group_name = "${var.project}-dbsubnet-pool-${random_string.x.result}"
-  rds_name = "${var.aurora_db_cluster.postgres["cluster_name"]}-${random_string.x.result}"
+  rds_name = var.aurora_db_cluster.postgres["cluster_name"]
+  # rds_name = "${var.aurora_db_cluster.postgres["cluster_name"]}-${random_string.x.result}"
   # rds_name = var.aurora_db_cluster.postgres["cluster_name"]
 
   db_username = var.aurora_db_cluster.postgres["master_username"]

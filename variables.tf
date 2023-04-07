@@ -9,15 +9,15 @@ variable "default_tags" { default     = {} }
 ###############################################################################
 # Remote-Backend
 ###############################################################################
-variable "backend_remote_organization" {
-default = ""
-}
-variable "backend_remote_network_workspace" {
-  default = ""
-}
-variable "backend_remote_eks_workspace" {
-  default = ""
-}
+# variable "backend_remote_organization" {
+# default = ""
+# }
+# variable "backend_remote_network_workspace" {
+#   default = ""
+# }
+# variable "backend_remote_eks_workspace" {
+#   default = ""
+# }
 
 ############################# vpc& network : var #########################################
 variable "vpc_id" { default     = "" }

@@ -68,7 +68,7 @@ variable "auth_scheme" {
 variable "iam_auth" {
   description = "Whether to require or disallow AWS Identity and Access Management (IAM) authentication for connections to the proxy. One of `DISABLED`, `REQUIRED`"
   type        = string
-  default     = "REQUIRED"
+  default     = "DISABLED"
 }
 
 variable "proxy_tags" {
