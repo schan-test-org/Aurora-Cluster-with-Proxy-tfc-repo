@@ -16,12 +16,14 @@ locals {
   # rds_name = var.aurora_db_cluster.postgres["cluster_name"]
 
   db_username = var.aurora_db_cluster.postgres["master_username"]
-  db_password = var.aurora_db_cluster.postgres["master_password"]
+  db_password = var.master_password
+  # db_password = var.aurora_db_cluster.postgres["master_password"]
 
 
-  database_name = var.aurora_db_cluster.postgres["database_name"] 
-  master_username = var.aurora_db_cluster.postgres["master_username"]  
-  master_password = var.aurora_db_cluster.postgres["master_password"]
+  database_name = var.aurora_db_cluster.postgres["database_name"]
+  master_username = var.aurora_db_cluster.postgres["master_username"]
+  master_password = var.master_password
+  # master_password = var.aurora_db_cluster.postgres["master_password"]
 
   db_engine = var.aurora_db_cluster.postgres["engine"]
   db_version = var.aurora_db_cluster.postgres["engine_version"]

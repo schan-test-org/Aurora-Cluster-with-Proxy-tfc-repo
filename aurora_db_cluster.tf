@@ -12,12 +12,12 @@ module "rds_psg" {
 
   db_subnet_group_name   = local.db_subnet_group_name
   vpc_security_group_ids = [module.rds_proxy_share_sg.security_group_id]
-  
+
   engine         = local.db_engine
   engine_version = local.db_version
   instance_class = local.db_instype
   instances      = { 1 = {}, 2 = {} }
-  
+
   availability_zones = local.availability_zones
 
   # When using RDS Proxy w/ IAM auth - Database must be username/password auth, not IAM

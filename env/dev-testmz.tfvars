@@ -58,12 +58,12 @@ aurora_db_cluster = {
     # availability_zones  = ["ap-northeast-2a", "ap-northeast-2c"]
     database_name       = "postgres"
     master_username     = "postgre_root"
-    master_password     = "uiop1234"
+    # master_password     = ""
     deletion_protection = false
     # instances      = { instance-1 = {}, instance-2 = {} }
     instance_class = "db.t3.medium"
     # instance_class = "db.r6g.large"
-    
+
     create_cluster_parameter_group  = false
     create_db_parameter_group       = false
     create_read_replica_autoscaling = false

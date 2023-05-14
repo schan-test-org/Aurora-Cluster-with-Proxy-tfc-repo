@@ -1,5 +1,3 @@
-# PostgreSQL Cluster & RDS Proxy
-
 ###  after-checking ###
 ```
 kubectl run -it --image nicolaka/netshoot testnet bash
@@ -12,6 +10,7 @@ psql --host=<rds-proxy> \
    --port=5432 \
    --username=<psg-root-name> \
    --dbname=<psg-db-name>
-   
+
  ```
 
+pw 관련 정보는 tfc 콘솔상에 terraform var 로 기재
